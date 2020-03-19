@@ -22,7 +22,10 @@
             android:layout_height="match_parent"
             android:background="@mipmap/ic_launcher"
             android:orientation="vertical">
-
+            <TextView
+                android:background="#4678ff"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
         </LinearLayout>
 
     </com.ylv.kz.slidelibrary.MyReshScrollView>
