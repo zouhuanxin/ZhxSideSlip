@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyReshScrollView">
+        <attr name="pull" format="boolean" />
+        <attr name="drop" format="boolean" />
+    </declare-styleable>
+</resources>
