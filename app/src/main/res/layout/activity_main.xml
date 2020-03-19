@@ -12,12 +12,11 @@
 
     <com.ylv.kz.slidelibrary.MyReshScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         app:pull="true"
         app:drop="true">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@mipmap/ic_launcher"
@@ -26,7 +25,7 @@
                 android:background="#4678ff"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
-        </LinearLayout>
+        </FrameLayout>
 
     </com.ylv.kz.slidelibrary.MyReshScrollView>
 

@@ -89,6 +89,7 @@ public class MyReshScrollView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed,l,t,r,b);
         getChildAt(0).layout(l, 0, r, getChildAt(0).getMeasuredHeight());
         getChildAt(1).layout(l, getChildAt(0).getMeasuredHeight(), r,
                 getChildAt(1).getMeasuredHeight() + getChildAt(0).getMeasuredHeight());
