@@ -11,13 +11,14 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MyReshScrollView extends LinearLayout {
+public class MyReshScrollView extends FrameLayout {
     private Context mContext;
     private OverScroller mScroller;
     private VelocityTracker mVelocityTracker;
@@ -45,31 +46,30 @@ public class MyReshScrollView extends LinearLayout {
 
     public MyReshScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context,attrs);
+        init(context, attrs);
     }
 
     public MyReshScrollView(Context context) {
         super(context);
-        init(context,null);
+        init(context, null);
     }
 
-    private void init(Context context,AttributeSet attrs) {
-        setOrientation(VERTICAL);
+    private void init(Context context, AttributeSet attrs) {
+        //setOrientation(VERTICAL);
         mContext = context;
         mScroller = new OverScroller(mContext);
         mVelocityTracker = VelocityTracker.obtain();
         final ViewConfiguration configuration = ViewConfiguration.get(mContext);
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(getScreenSize(context).widthPixels,140);
-        HeadView = LayoutInflater.from(context).inflate(R.layout.header_layout,null);
+        HeadView = LayoutInflater.from(context).inflate(R.layout.header_layout, null);
         FooterView = LayoutInflater.from(context).inflate(R.layout.footer_layout, null);
-        HeadView.setLayoutParams(params);
-        FooterView.setLayoutParams(params);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MyReshScrollView);
-        PullOnloading = a.getBoolean(R.styleable.MyReshScrollView_pull,false);
-        DropDownRefresh = a.getBoolean(R.styleable.MyReshScrollView_drop,false);
-        HeadView.setVisibility(DropDownRefresh? VISIBLE:INVISIBLE);
-        FooterView.setVisibility(PullOnloading? VISIBLE:INVISIBLE);
+        PullOnloading = a.getBoolean(R.styleable.MyReshScrollView_pull, false);
+        DropDownRefresh = a.getBoolean(R.styleable.MyReshScrollView_drop, false);
+        ViewGroup.LayoutParams headparams = new ViewGroup.LayoutParams(getScreenSize(context).widthPixels, DropDownRefresh ? 140 : 0);
+        ViewGroup.LayoutParams footparams = new ViewGroup.LayoutParams(getScreenSize(context).widthPixels, PullOnloading ? 140 : 0);
+        HeadView.setLayoutParams(headparams);
+        FooterView.setLayoutParams(footparams);
         PullView(HeadView);
         DropDownView(FooterView);
     }
@@ -89,7 +89,11 @@ public class MyReshScrollView extends LinearLayout {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        getChildAt(0).layout(l, 0, r, getChildAt(0).getMeasuredHeight());
+        getChildAt(1).layout(l, getChildAt(0).getMeasuredHeight(), r,
+                getChildAt(1).getMeasuredHeight() + getChildAt(0).getMeasuredHeight());
+        getChildAt(2).layout(l, getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight(), r,
+                getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight() + getChildAt(2).getMeasuredHeight());
         scrollBy(0, getChildAt(0).getMeasuredHeight());
     }
 
@@ -166,20 +170,42 @@ public class MyReshScrollView extends LinearLayout {
                 DropDwonProgressBar2.setVisibility(INVISIBLE);
                 DropDwonProgressBar3.setVisibility(VISIBLE);
                 mScroller.startScroll(0, getScrollY(), 0, -getScrollY(), 300);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                            setDropLoadMoreCompleted();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             } else {
                 mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - getChildAt(0).getMeasuredHeight()), 300);
             }
         } else if (getScrollY() - getChildAt(0).getMeasuredHeight() >= Math.max(0, getChildAt(1).getMeasuredHeight() - getHeight())) {
             if (PullOnloading) {
                 mScroller.startScroll(0, getScrollY(), 0,
-                        Math.max(getChildAt(0).getMeasuredHeight(),
+                        Math.max(0,
                                 getChildAt(1).getMeasuredHeight() - getHeight()) - getScrollY() + getChildAt(0).getMeasuredHeight()
                                 + getChildAt(2).getMeasuredHeight(),
                         300);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                            setPullLoadMoreCompleted();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             } else {
                 mScroller.startScroll(0, getScrollY(), 0,
                         Math.max(getChildAt(0).getMeasuredHeight(),
-                                getChildAt(1).getMeasuredHeight() - getHeight()) - getScrollY() + getChildAt(0).getMeasuredHeight(),
+                                getChildAt(1).getMeasuredHeight() - getHeight()) - getScrollY() ,
                         300);
             }
         } else {
@@ -192,7 +218,7 @@ public class MyReshScrollView extends LinearLayout {
 
     public void setPullLoadMoreCompleted() {
         mScroller.startScroll(0, getScrollY(), 0,
-                Math.max(getChildAt(0).getMeasuredHeight(),
+                Math.max(0,
                         getChildAt(1).getMeasuredHeight() - getHeight()) - getScrollY() + getChildAt(0).getMeasuredHeight(),
                 300);
         invalidate();
