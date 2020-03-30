@@ -97,9 +97,9 @@ public class MyReshScrollView extends FrameLayout {
                 getChildAt(1).getMeasuredHeight() + getChildAt(0).getMeasuredHeight());
         getChildAt(2).layout(l, getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight(), r,
                 getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight() + getChildAt(2).getMeasuredHeight());
-        if (DropDwonLayout.getVisibility() == VISIBLE){
-            scrollBy(0, getChildAt(0).getMeasuredHeight());
-        }
+        scrollBy(0, getChildAt(0).getMeasuredHeight());
+        loadMoreLayout.setVisibility(GONE);
+        DropDwonLayout.setVisibility(GONE);
     }
 
     @Override
@@ -261,7 +261,6 @@ public class MyReshScrollView extends FrameLayout {
         loadMoreLayout = (LinearLayout) v.findViewById(R.id.loadMoreLayout);
         loadMoreProgressBar = (ProgressBar) v.findViewById(R.id.loadMoreProgressBar);
         loadMoreText = (TextView) v.findViewById(R.id.loadMoreText);
-        loadMoreLayout.setVisibility(GONE);
     }
 
     private void PullView(View v) {
@@ -272,7 +271,6 @@ public class MyReshScrollView extends FrameLayout {
         DropDwonText2 = (TextView) v.findViewById(R.id.DropDwonText2);
         DropDwonProgressBar3 = (ProgressBar) v.findViewById(R.id.DropDwonProgressBar3);
         DropDwonText3 = (TextView) v.findViewById(R.id.DropDwonText3);
-        DropDwonLayout.setVisibility(GONE);
     }
 
 }
