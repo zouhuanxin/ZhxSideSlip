@@ -97,7 +97,9 @@ public class MyReshScrollView extends FrameLayout {
                 getChildAt(1).getMeasuredHeight() + getChildAt(0).getMeasuredHeight());
         getChildAt(2).layout(l, getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight(), r,
                 getChildAt(0).getMeasuredHeight() + getChildAt(1).getMeasuredHeight() + getChildAt(2).getMeasuredHeight());
-        scrollBy(0, getChildAt(0).getMeasuredHeight());
+        if (DropDwonLayout.getVisibility() == VISIBLE){
+            scrollBy(0, getChildAt(0).getMeasuredHeight());
+        }
     }
 
     @Override
